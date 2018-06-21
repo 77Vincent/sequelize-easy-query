@@ -1,0 +1,26 @@
+{
+    "env": {
+        "node": true,
+        "commonjs": true
+    },
+    "extends": "airbnb-base",
+    "rules": {
+        "import/no-extraneous-dependencies": ["error", {
+            "devDependencies": true
+        }],
+        "init-declarations": ["error", "always"],
+        "linebreak-style": "off",
+        "camelcase": "off",
+        "semi": ["error", "never"],
+        "prefer-destructuring": ["error", {
+            "object": true
+        }],
+        "no-await-in-loop": "off",
+        "no-console": ["error", {
+            "allow": ["warn", "error"]
+        }],
+        "max-len": ["error", {
+            "code": 120 
+        }]
+    }
+}
