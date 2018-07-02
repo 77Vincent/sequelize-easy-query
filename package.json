@@ -1,7 +1,7 @@
 {
   "name": "sequelize-where",
   "version": "1.0.0",
-  "description": "",
+  "description": "An easier and more robust way of making filtering, searching and ordering in sequelize.",
   "main": "./dist/sequelize-easy-query.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
