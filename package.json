@@ -2,7 +2,7 @@
   "name": "sequelize-where",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/sequelize-easy-query.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint index.js"
@@ -13,9 +13,11 @@
   },
   "keywords": [
     "sequelize",
+    "sql",
     "where",
     "filter",
     "search",
+    "order",
     "querystring",
     "query"
   ],
