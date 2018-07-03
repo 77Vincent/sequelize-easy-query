@@ -12,8 +12,6 @@ npm install sequelize-easy-query --save
 ## Usage
 Let's say we have a table called "User".
 ```js
-// For demonstration purpose, only present the core part
-
 module.exports.User = new Sequelize(configs).define('user', {
   gender: Sequelize.BOOLEAN,
   active: Sequelize.BOOLEAN,
@@ -24,7 +22,7 @@ module.exports.User = new Sequelize(configs).define('user', {
 })
 ```
 
-By doing as follow, "User" now supports multiple queries using query string with safety.
+By doing as follow, "User" now supports multiple queries using querystring with safety.
 ```js
 const seq = require('sequelize-easy-query')
 
@@ -38,31 +36,33 @@ const data = await User.findAll({
   })
 })
 ```
-#### Filtering
+All the keys declared in filterBy can now be used for query, individually or in combination.
 ```bash
 example.com/api/users?gender=0&active=1
 ```
-#### Searching
-```bash
-example.com/api/users?search=some_value
-```
-#### Ordering
+
+Similar as filterBy, when orderBy is presented, keys defined in there can now be used for ordering, but with only two options: "ASC" or "DESC".
 ```bash
 example.com/api/users?age=DESC
 ```
-#### Combination
+
+A little different when using searchBy, keys defined in there is to tell the database what columns to be searched, the key to trigger a search query is "search".
+```bash
+example.com/api/users?search=some_value
+```
+
+All of those queries can be made in combination.
 ```bash
 example.com/api/users?gender=0&search=some_value&age=DESC
 ```
-#### No error will occur under these cases:
-- Pass column names that are not defined in the table
+
+No error will occur when passing keys that are not defined in the table
 ```bash
 example.com/api/users?nonexistent_column=some_value
 ```
-- Incomplete query string
-```bash
-example.com/api/users?key
-```
+or with incomplete query string like
 ```bash
 example.com/api/users?key=
+
+example.com/api/users?key
 ```
