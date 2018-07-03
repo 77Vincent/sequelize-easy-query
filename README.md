@@ -36,26 +36,32 @@ const data = await User.findAll({
   })
 })
 ```
+
+#### Filter
 All the keys declared in filterBy can now be used for query, individually or in combination.
 ```bash
 example.com/api/users?gender=0&active=1
 ```
 
+#### Order
 Similar as filterBy, when orderBy is presented, keys defined in there can now be used for ordering, but with only two options: "ASC" or "DESC".
 ```bash
 example.com/api/users?age=DESC
 ```
 
+#### Search
 A little different when using searchBy, keys defined in there is to tell the database what columns to be searched, the key to trigger a search query is "search".
 ```bash
 example.com/api/users?search=some_value
 ```
 
+#### Combination
 All of those queries can be made in combination.
 ```bash
 example.com/api/users?gender=0&search=some_value&age=DESC
 ```
 
+#### No error
 No error will occur when passing keys that are not defined in the table
 ```bash
 example.com/api/users?nonexistent_column=some_value
@@ -65,4 +71,6 @@ or with incomplete query string like
 example.com/api/users?key=
 
 example.com/api/users?key
+
+example.com/api/users?key=&key2=
 ```
