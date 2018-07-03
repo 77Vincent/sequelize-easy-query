@@ -12,7 +12,7 @@ npm install sequelize-easy-query --save
 ## Usage
 Let's say we have a table called "User".
 ```js
-// For demonstration purpose some codes are omitted.
+// For demonstration purpose, only present the core part
 
 module.exports.User = new Sequelize(configs).define('user', {
   gender: Sequelize.BOOLEAN,
@@ -20,18 +20,49 @@ module.exports.User = new Sequelize(configs).define('user', {
   age: Sequelize.TINYINT,
   motto: Sequelize.STRING,
   bio: Sequelize.STRING,
+  updated_at: Sequelize.Date,
 })
 ```
 
-By doing as follow, User table now supports:
-- Filtered 
+By doing as follow, "User" now supports multiple queries using query string with safety.
 ```js
 const seq = require('sequelize-easy-query')
 
 const data = await User.findAll({
   where: seq.where('raw query string', {
-    filterBy: ['gender'],
-    searchBy: ['motto'],
+    filterBy: ['gender', 'active'],
+    searchBy: ['motto', 'bio'],
   }),
+  order: seq.order('raw query string', {
+    orderBy: ['age', 'updated_at']
+  })
 })
+```
+#### Filtering
+```bash
+example.com/api/users?gender=0&active=1
+```
+#### Searching
+```bash
+example.com/api/users?search=some_value
+```
+#### Ordering
+```bash
+example.com/api/users?age=DESC
+```
+#### Combination
+```bash
+example.com/api/users?gender=0&search=some_value&age=DESC
+```
+#### No error will occur under these cases:
+- Pass column names that are not defined in the table
+```bash
+example.com/api/users?nonexistent_column=some_value
+```
+- Incomplete query string
+```bash
+example.com/api/users?key
+```
+```bash
+example.com/api/users?key=
 ```
