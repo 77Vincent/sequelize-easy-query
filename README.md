@@ -33,7 +33,7 @@ module.exports.User = new Sequelize(configs).define('user', {
 const seq = require('sequelize-easy-query')
 
 const users = await User.findAll({
-  where: seq.where('raw query string', {
+  where: seq('raw query string', {
     filterBy: ['gender', 'active'],
     searchBy: ['bio', 'motto'],
     orderBy: ['age', 'updated_at'],
@@ -59,7 +59,7 @@ const users = await User.findAll({
 To filter the "User" table by "gender" and "active" column, simply do:
 ```js
 const users = await User.findAll({
-  where: seq.where('raw query string', {
+  where: seq('raw query string', {
     filterBy: ['gender', 'active'],
   }),
 })
@@ -77,7 +77,7 @@ example.com/api/users?gender=0&gender=1
 To search the "User" table by content in "bio" **OR** "motto" column, simply do:
 ```js
 const users = await User.findAll({
-  where: seq.where('raw query string', {
+  where: seq('raw query string', {
     searchBy: ['bio', 'motto'],
   }),
 })
@@ -95,7 +95,7 @@ example.com/api/users?search=some_values&search=some_other_values
 To order the "User" table by "age" or "updated_at" column, simply do:
 ```js
 const users = await User.findAll({
-  order: seq.where('raw query string', {
+  order: seq('raw query string', {
     orderBy: ['age', 'updated_at'],
   }),
 })
@@ -116,7 +116,7 @@ example.com/api/users?age=DESC&updated_at=ASC
 Sometimes if you want the key used for query to not be the same as its corresponding column name, you can do:
 ```js
 const users = await User.findAll({
-  order: seq.where('raw query string', {
+  order: seq('raw query string', {
     filterBy: {
       gender: 'isMale',
       active: 'isAvailale',
@@ -128,6 +128,31 @@ Now you can filter by using the new key:
 ```bash
 example.com/api/users?isMale=0&isAvailable=1
 ```
+This feature is especially useful when you have included other associated models, you want to filter the main model by some columns from those associated models and to not affect the main model:
+```js
+const users = await User.findAll({
+  include: [{
+    model: Puppy,
+    where: seq('raw query string', {
+      filterByAlias: {
+        gender: 'puppy_gender'
+      }
+    })
+  }],
+  where: seq('raw query string', {
+    filterBy: ['gender']
+  }),
+})
+```
+Now "puppy_gender" is used to filter users based on their puppies' gender, but not they themselves' gender:
+```bash
+example.com/api/users?pet_gender=1
+```
+While "gender" is still used to filter by users' gender:
+```bash
+example.com/api/users?gender=1
+```
+
 Alias can also be given the same value as the original column name, it's totally fine:
 ```js
 const users = await User.findAll({
