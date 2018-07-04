@@ -24,9 +24,9 @@ module.exports.User = new Sequelize(configs).define('user', {
   updated_at: Sequelize.Date,
 })
 ```
-
-## Table of API
 * [filterBy](#filterBy)
+* [searchBy](#searchBy)
+* [orderBy](#orderBy)
 
 ### <a name="filterBy"></a>filterBy
 To filter the "User" table by "gender" and "active" column, simply do:
@@ -46,7 +46,7 @@ Multiple selection
 example.com/api/users?gender=0&gender=1
 ```
 
-### searchBy
+### <a name="searchBy"></a>searchBy
 To search the "User" table by content in "bio" **OR** "motto" column, simply do:
 ```js
 const users = await User.findAll({
@@ -57,14 +57,14 @@ const users = await User.findAll({
 ```
 Now you can trigger a search by using the key "search", which will give you those users that have "some_values" in their "bio" **OR** "motto" field.
 ```bash
-example.com/api/users?search=some_value
+example.com/api/users?search=some_values
 ```
 Unlike filterBy, multiple search is **NOT SUPPORTED** yet.
 ```bash
 example.com/api/users?search=some_values&search=some_other_values
 ```
 
-### orderBy
+### <a name="orderBy"></a>orderBy
 To order the "User" table by "age" or "updated_at" column, simply do:
 ```js
 const users = await User.findAll({
@@ -79,4 +79,8 @@ example.com/api/users?age=DESC
 ```
 ```bash
 example.com/api/users?updated_at=ASC
+```
+Multiple ordering is meaningless, only the first query will work.
+```bash
+example.com/api/users?age=DESC&updated_at=ASC
 ```
