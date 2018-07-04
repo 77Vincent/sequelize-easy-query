@@ -23,10 +23,29 @@ module.exports.User = new Sequelize(configs).define('user', {
   bio: Sequelize.STRING,
   updated_at: Sequelize.Date,
 })
+
+const users = await User.findAll({
+  where: seq.where('raw query string', {
+    filterBy: ['gender', 'active'],
+    searchBy: ['bio', 'motto'],
+    orderBy: ['age', 'updated_at'],
+  }),
+})
 ```
+
+## Table of API
+##### Basic query
 * [filterBy](#filterBy)
 * [searchBy](#searchBy)
 * [orderBy](#orderBy)
+##### Query with alias
+* [filterByAlias](#filterByAlias)
+* [orderByAlias](#orderByAlias)
+##### Pre-query
+* [filter](#filter)
+* [search](#search)
+* [order](#order)
+
 
 ### <a name="filterBy"></a>filterBy
 To filter the "User" table by "gender" and "active" column, simply do:
