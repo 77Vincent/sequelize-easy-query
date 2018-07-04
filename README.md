@@ -1,5 +1,5 @@
 # sequelize-easy-query
-An easy and robust way of making filtering, searching and ordering in sequelize.
+An easy and robust way of making filtering, searching and ordering using querystring in sequelize.
 
 [![Build Status](https://travis-ci.org/77Vincent/sequelize-easy-query.svg?branch=master)](https://travis-ci.org/77Vincent/sequelize-easy-query)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -10,8 +10,11 @@ npm install sequelize-easy-query --save
 ```
 
 ## Usage
-Let's say we have a table called "User".
+Let's say we have a "User" table.
 ```js
+const Sequelize = require('sequelize')
+const seq = require('sequelize-easy-query')
+
 module.exports.User = new Sequelize(configs).define('user', {
   gender: Sequelize.BOOLEAN,
   active: Sequelize.BOOLEAN,
@@ -22,38 +25,41 @@ module.exports.User = new Sequelize(configs).define('user', {
 })
 ```
 
-By doing as follow, "User" now supports multiple queries using querystring with safety.
+### filterBy
+To filter the "User" table by "gender" and "active" column, simply do:
 ```js
-const seq = require('sequelize-easy-query')
-
-const data = await User.findAll({
+const users = await User.findAll({
   where: seq.where('raw query string', {
     filterBy: ['gender', 'active'],
-    searchBy: ['motto', 'bio'],
   }),
-  order: seq.order('raw query string', {
-    orderBy: ['age', 'updated_at']
-  })
 })
 ```
-
-#### Filter
-All the keys declared in filterBy can now be used for query, individually or in combination.
+Now you can filter with querystring individually or in combination.
 ```bash
 example.com/api/users?gender=0&active=1
 ```
-
-#### Order
-Similar as filterBy, when orderBy is presented, keys defined in there can now be used for ordering, but with only two options: "ASC" or "DESC".
+Multiple selection
 ```bash
-example.com/api/users?age=DESC
+example.com/api/users?gender=0&gender=1
+```
+
+### searchBy
+To search the "User" table by content in "bio" or "motto" column, simply do:
+```js
+const users = await User.findAll({
+  where: seq.where('raw query string', {
+    searchBy: ['bio', 'motto'],
+  }),
+})
+```
+Unlike filterBy, the key word 
+```bash
+example.com/api/users?search=some_value
 ```
 
 #### Search
 A little different when using searchBy, keys defined in there is to tell the database what columns to be searched, the key to trigger a search query is "search".
-```bash
-example.com/api/users?search=some_value
-```
+
 
 #### Combination
 All of those queries can be made in combination.
