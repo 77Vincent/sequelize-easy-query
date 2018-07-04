@@ -53,7 +53,6 @@ const users = await User.findAll({
 * [search](#search)
 * [order](#order)
 
-
 ### <a name="filterBy"></a>filterBy
 To filter the "User" table by "gender" and "active" column, simply do:
 ```js
@@ -155,7 +154,7 @@ example.com/api/users?gender=1
 Alias can also be given the same value as the original column name, it's totally fine:
 ```js
 const users = await User.findAll({
-  order: seq.where('raw query string', {
+  where: seq('raw query string', {
     filterBy: {
       gender: 'gender',
       active: 'active',
@@ -170,4 +169,52 @@ example.com/api/users?gender=0&active=1
 
 ### <a name="orderByAlias"></a>orderByAlias
 Please refer to [filterByAlias](#filterByAlias) which is for the same purpose and with the same behaviour.
+
+### <a name="filter"></a>filter
+If you want to pre-filter the table, simply do:
+```js
+const users = await User.findAll({
+  where: seq('raw query string', {
+    filter: {
+      gender: 1,
+      active: 0,
+    }
+  }),
+})
+```
+Now without actually passing any querystring, you will get result that's already been filtered:
+```bash
+example.com/api/users
+```
+
+### <a name="search"></a>search
+If you want to pre-search the table, simply do as follow, to be noticed that "searchBy" is needed to be declared as it tells database which column to search:
+```js
+const users = await User.findAll({
+  where: seq('raw query string', {
+    search: 'content to search',
+    searchBy: ['bio', 'motto'],
+  }),
+})
+```
+Now without actually passing any querystring, you will get result that's already been searched:
+```bash
+example.com/api/users
+```
+
+### <a name="order"></a>order
+If you want to pre-order the table, simply do as follow, to be notice that only one column 
+```js
+const users = await User.findAll({
+  order: seq('raw query string', {
+    order: {
+      age: 'DESC'
+    }
+  }),
+})
+```
+Now without actually passing any querystring, you will get result that's already been searched:
+```bash
+example.com/api/users
+```
 
