@@ -28,7 +28,10 @@ const processAlias = (alias = {}, inputQueryObject = {}) => {
   return outputQueryObject
 }
 
-module.exports = (rawQuerystring = '', options = {}) => {
+/**
+ * Generate query object for the sequelize "where" or "order" clauses
+ */
+module.exports = (rawQuerystring = '', options = { jjj: [] }) => {
   if (is(options) !== '[object Object]') {
     throw new Error('The second parameter: options should be type of Object')
   }
