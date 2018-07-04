@@ -12,8 +12,10 @@ npm install sequelize-easy-query --save
 ## Usage
 Let's say we have a "User" table, we want to implement filter, order or seaerch feature using querystring, with the native sequelize "where" and "order" clause.
 ```js
+// user-model.js
+// For demonstration purpose, some codes are omitted
+
 const Sequelize = require('sequelize')
-const seq = require('sequelize-easy-query')
 
 module.exports.User = new Sequelize(configs).define('user', {
   gender: Sequelize.BOOLEAN,
@@ -23,6 +25,12 @@ module.exports.User = new Sequelize(configs).define('user', {
   bio: Sequelize.STRING,
   updated_at: Sequelize.Date,
 })
+```
+```js
+// user-router.js
+// For demonstration purpose, some codes are omitted
+
+const seq = require('sequelize-easy-query')
 
 const users = await User.findAll({
   where: seq.where('raw query string', {
