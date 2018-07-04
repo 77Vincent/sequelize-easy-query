@@ -52,9 +52,13 @@ const users = await User.findAll({
   }),
 })
 ```
-Unlike filterBy, the key word 
+Now you can trigger a search by using the key "search", which will give you those users that have "some_values" in their "bio" **OR** "motto" field.
 ```bash
 example.com/api/users?search=some_value
+```
+Unlike filterBy, multiple search is **NOT SUPPORTED** yet.
+```bash
+example.com/api/users?search=some_values&search=some_other_values
 ```
 
 #### Search
