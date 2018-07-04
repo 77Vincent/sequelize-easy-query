@@ -44,7 +44,7 @@ example.com/api/users?gender=0&gender=1
 ```
 
 ### searchBy
-To search the "User" table by content in "bio" or "motto" column, simply do:
+To search the "User" table by content in "bio" **OR** "motto" column, simply do:
 ```js
 const users = await User.findAll({
   where: seq.where('raw query string', {
@@ -61,26 +61,19 @@ Unlike filterBy, multiple search is **NOT SUPPORTED** yet.
 example.com/api/users?search=some_values&search=some_other_values
 ```
 
-#### Search
-A little different when using searchBy, keys defined in there is to tell the database what columns to be searched, the key to trigger a search query is "search".
-
-
-#### Combination
-All of those queries can be made in combination.
-```bash
-example.com/api/users?gender=0&search=some_value&age=DESC
+### orderBy
+To order the "User" table by "age" or "updated_at" column, simply do:
+```js
+const users = await User.findAll({
+  order: seq.where('raw query string', {
+    orderBy: ['age', 'updated_at'],
+  }),
+})
 ```
-
-#### No error
-No error will occur when passing keys that are not defined in the table
+Now you can order the table by "age" **OR** "updated_at" respectively, only two options are usable: DESC or ASC.
 ```bash
-example.com/api/users?nonexistent_column=some_value
+example.com/api/users?age=DESC
 ```
-or with incomplete query string like
 ```bash
-example.com/api/users?key=
-
-example.com/api/users?key
-
-example.com/api/users?key=&key2=
+example.com/api/users?updated_at=ASC
 ```
