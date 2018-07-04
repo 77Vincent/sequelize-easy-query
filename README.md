@@ -35,6 +35,8 @@ const users = await User.findAll({
   where: seq('raw query string', {
     filterBy: ['gender', 'active'],
     searchBy: ['bio', 'motto'],
+  }),
+  order: seq('raw query string', {
     orderBy: ['age', 'updated_at'],
   }),
 })
@@ -114,7 +116,7 @@ example.com/api/users?age=DESC&updated_at=ASC
 Sometimes if you want the key used for query to not be the same as its corresponding column name, you can do:
 ```js
 const users = await User.findAll({
-  order: seq('raw query string', {
+  where: seq('raw query string', {
     filterBy: {
       gender: 'isMale',
       active: 'isAvailale',
