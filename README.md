@@ -41,6 +41,14 @@ const users = await User.findAll({
   }),
 })
 ```
+Now you are able to perform multiple queries on the table using querystring with safety:
+```bash
+example.com/api/users?gender=0&active=1&search=programmer&cost=DESC
+```
+Passing incomplete querystring or nonexistent column names won't cause any error at all:
+```bash
+example.com/api/users?&status=1&gender=
+```
 
 ## Table of API
 ##### Basic query
@@ -68,13 +76,13 @@ Now you can filter with querystring individually or in combination:
 ```bash
 example.com/api/users?gender=0&active=1
 ```
-Multiple selection for the same column:
+Multiple selections on the same column, this will return users with gender 1 **OR** 0
 ```bash
 example.com/api/users?gender=0&gender=1
 ```
 
 ### <a name="searchBy"></a>searchBy
-To search the "User" table by content in "bio" **OR** "motto" column, simply do:
+To search users by content in their "bio" **OR** "motto" column, simply do:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -86,13 +94,13 @@ Now you can trigger a search by using the key "search", which will give you thos
 ```bash
 example.com/api/users?search=some_values
 ```
-Unlike filterBy, multiple search is **NOT SUPPORTED** yet:
+Unlike filterBy, multiple searches is **NOT SUPPORTED** yet, only one search can be given at a time:
 ```bash
 example.com/api/users?search=some_values&search=some_other_values
 ```
 
 ### <a name="orderBy"></a>orderBy
-To order the "User" table by "age" or "updated_at" column, simply do:
+To order users by their "age" or "updated_at" value, simply do:
 ```js
 const users = await User.findAll({
   order: seq('raw query string', {
