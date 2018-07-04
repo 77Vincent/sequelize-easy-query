@@ -64,11 +64,11 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can filter with querystring individually or in combination.
+Now you can filter with querystring individually or in combination:
 ```bash
 example.com/api/users?gender=0&active=1
 ```
-Multiple selection
+Multiple selection for the same column:
 ```bash
 example.com/api/users?gender=0&gender=1
 ```
@@ -82,11 +82,11 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can trigger a search by using the key "search", which will give you those users that have "some_values" in their "bio" **OR** "motto" field.
+Now you can trigger a search by using the key "search", which will give you those users that have "some_values" in their "bio" **OR** "motto" field:
 ```bash
 example.com/api/users?search=some_values
 ```
-Unlike filterBy, multiple search is **NOT SUPPORTED** yet.
+Unlike filterBy, multiple search is **NOT SUPPORTED** yet:
 ```bash
 example.com/api/users?search=some_values&search=some_other_values
 ```
@@ -100,14 +100,50 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can order the table by "age" **OR** "updated_at" respectively, only two options are usable: DESC or ASC.
+Now you can order the table by "age" **OR** "updated_at" respectively, only two options are usable: DESC or ASC:
 ```bash
 example.com/api/users?age=DESC
 ```
 ```bash
 example.com/api/users?updated_at=ASC
 ```
-Multiple ordering is meaningless, only the first query will work.
+Multiple ordering is meaningless, only the first query will work:
 ```bash
 example.com/api/users?age=DESC&updated_at=ASC
 ```
+
+### <a name="filterByAlias"></a>filterByAlias
+Sometimes if you want the key used for query to not be the same as its corresponding column name, you can do:
+```js
+const users = await User.findAll({
+  order: seq.where('raw query string', {
+    filterBy: {
+      gender: 'isMale',
+      active: 'isAvailale',
+    },
+  }),
+})
+```
+Now you can filter by using the new key:
+```bash
+example.com/api/users?isMale=0&isAvailable=1
+```
+Alias can also be given the same value as the original column name, it's totally fine:
+```js
+const users = await User.findAll({
+  order: seq.where('raw query string', {
+    filterBy: {
+      gender: 'gender',
+      active: 'active',
+    },
+  }),
+})
+```
+Then everything will be just like using filterBy:
+```bash
+example.com/api/users?gender=0&active=1
+```
+
+### <a name="orderByAlias"></a>orderByAlias
+Please refer to [filterByAlias](#filterByAlias) which is for the same purpose and with the same behaviour.
+
