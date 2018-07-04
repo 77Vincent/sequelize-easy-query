@@ -45,9 +45,12 @@ Now you are able to perform multiple queries on the table using querystring with
 ```bash
 example.com/api/users?gender=0&active=1&search=programmer&cost=DESC
 ```
-Passing incomplete querystring or nonexistent column names won't cause any error:
+Passing incomplete querystring or nonexistent column names won't cause any error, in below cases, the whole table without any filtering will be returned:
 ```bash
-example.com/api/users?&status=1&gender=
+example.com/api/users?&status=1
+```
+```bash
+example.com/api/users?gender
 ```
 
 ## Table of API
@@ -64,7 +67,7 @@ example.com/api/users?&status=1&gender=
 * [order](#order)
 
 ### <a name="filterBy"></a>filterBy: string[ ]
-To filter the "User" table by "gender" and "active" column, simply do:
+Filter the "User" table by "gender" and "active" column:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -82,7 +85,7 @@ example.com/api/users?gender=0&gender=1
 ```
 
 ### <a name="searchBy"></a>searchBy: string[ ]
-To search users by content in their "bio" **OR** "motto" column, simply do:
+Search users by content in their "bio" **OR** "motto" column:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -100,7 +103,7 @@ example.com/api/users?search=some_values&search=some_other_values
 ```
 
 ### <a name="orderBy"></a>orderBy: string[ ]
-To order users by their "age" or "updated_at" value, simply do:
+Order users by their "age" or "updated_at" value:
 ```js
 const users = await User.findAll({
   order: seq('raw query string', {
@@ -121,7 +124,7 @@ example.com/api/users?age=DESC&updated_at=ASC
 ```
 
 ### <a name="filterByAlias"></a>filterByAlias: {}
-Sometimes you want the key used for query not to be the same as its corresponding column name, you can do:
+Sometimes you want the key used for query not to be the same as its corresponding column name:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -181,7 +184,7 @@ example.com/api/users?gender=0&active=1
 Please refer to [filterByAlias](#filterByAlias) which is for the same purpose and with the same behaviour.
 
 ### <a name="filter"></a>filter: {}
-If you want to pre-filter the table without any querystring from client, simply do:
+Pre-filter the table even without any querystring from client:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -192,13 +195,13 @@ const users = await User.findAll({
   }),
 })
 ```
-You can still add querystring for further filtering, this will be the same as doing "?gender=1&gender=0&active=0":
+New querystring can still be added for further filtering, this will be the same as doing "?gender=1&gender=0&active=0":
 ```bash
 example.com/api/users?gender=0
 ```
 
 ### <a name="search"></a>search: string
-If you want to pre-search the table without any querystring from client, simply do as follow, to be noticed that "searchBy" is still needed to be declared as it tells database on which columns to perform the search:
+Pre-search the table even without any querystring from client, to be noticed that "searchBy" is still needed to be declared as it tells database on which columns to perform the search:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -213,7 +216,7 @@ example.com/api/users?search=some_other_content
 ```
 
 ### <a name="order"></a>order: {}
-If you want to pre-order the table, simply do as follow, to be notice that it can only order the table based on one column at a time:
+Pre-order the table even without any querystring from client, to be notice that it can only take one key-value pairs at a time:
 ```js
 const users = await User.findAll({
   order: seq('raw query string', {
@@ -223,7 +226,7 @@ const users = await User.findAll({
   }),
 })
 ```
-You can still add querystring for further ordering, the new added query will take place:
+New querystring can still be added for further ordering, the new added order-query will take place:
 ```bash
 example.com/api/users?updated_at=DESC
 ```
