@@ -37,8 +37,3 @@ node_modules
 
 # Local credentials
 .git-credentials
-
-# Build directory
-build
-dist
-bundle

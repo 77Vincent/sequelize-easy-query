@@ -1,8 +1,8 @@
 {
   "name": "sequelize-where",
   "version": "1.0.0",
-  "description": "An easier and more robust way of making filtering, searching and ordering in sequelize.",
-  "main": "./dist/sequelize-easy-query.js",
+  "description": "An easy and robust way of making filtering, searching and ordering in sequelize.",
+  "main": "./sequelize-easy-query.js",
   "scripts": {
     "test": "npm run lint",
     "lint": "eslint index.js"
@@ -13,6 +13,7 @@
   },
   "keywords": [
     "sequelize",
+    "nodejs",
     "sql",
     "where",
     "filter",
