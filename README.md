@@ -10,7 +10,7 @@ npm install sequelize-easy-query --save
 ```
 
 ## Usage
-Let's say we have a "User" table.
+Let's say we have a "User" table, we want to implement filter, order or seaerch feature using querystring, with the native sequelize "where" and "order" clause.
 ```js
 const Sequelize = require('sequelize')
 const seq = require('sequelize-easy-query')
@@ -25,7 +25,10 @@ module.exports.User = new Sequelize(configs).define('user', {
 })
 ```
 
-### filterBy
+## Table of API
+* [filterBy](#filterBy)
+
+### <a name="filterBy"></a>filterBy
 To filter the "User" table by "gender" and "active" column, simply do:
 ```js
 const users = await User.findAll({
