@@ -45,7 +45,7 @@ Now you are able to perform multiple queries on the table using querystring with
 ```bash
 example.com/api/users?gender=0&active=1&search=programmer&cost=DESC
 ```
-Passing incomplete querystring or nonexistent column names won't cause any error at all:
+Passing incomplete querystring or nonexistent column names won't cause any error:
 ```bash
 example.com/api/users?&status=1&gender=
 ```
@@ -63,7 +63,7 @@ example.com/api/users?&status=1&gender=
 * [search](#search)
 * [order](#order)
 
-### <a name="filterBy"></a>filterBy
+### <a name="filterBy"></a>filterBy: string[ ]
 To filter the "User" table by "gender" and "active" column, simply do:
 ```js
 const users = await User.findAll({
@@ -81,7 +81,7 @@ Multiple selections on the same column, this will return users with gender 1 **O
 example.com/api/users?gender=0&gender=1
 ```
 
-### <a name="searchBy"></a>searchBy
+### <a name="searchBy"></a>searchBy: string[ ]
 To search users by content in their "bio" **OR** "motto" column, simply do:
 ```js
 const users = await User.findAll({
@@ -99,7 +99,7 @@ Unlike filterBy, multiple searches is **NOT SUPPORTED** yet, only one search can
 example.com/api/users?search=some_values&search=some_other_values
 ```
 
-### <a name="orderBy"></a>orderBy
+### <a name="orderBy"></a>orderBy: string[ ]
 To order users by their "age" or "updated_at" value, simply do:
 ```js
 const users = await User.findAll({
@@ -120,12 +120,12 @@ Multiple ordering is meaningless, only the first query will work:
 example.com/api/users?age=DESC&updated_at=ASC
 ```
 
-### <a name="filterByAlias"></a>filterByAlias
-Sometimes if you want the key used for query to not be the same as its corresponding column name, you can do:
+### <a name="filterByAlias"></a>filterByAlias: {}
+Sometimes you want the key used for query not to be the same as its corresponding column name, you can do:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
-    filterBy: {
+    filterByAlias: {
       gender: 'isMale',
       active: 'isAvailale',
     },
@@ -136,7 +136,7 @@ Now you can filter users by using the new keys and the original ones can no long
 ```bash
 example.com/api/users?isMale=0&isAvailable=1
 ```
-This feature is especially useful when you have included other associated models, you want to filter the main model by some columns from those associated models but to not affect the main model:
+This feature is especially useful when you have included other associated models, you want to filter the main model based on columns from those associated models but not to affect the main model:
 ```js
 const users = await User.findAll({
   include: [{
@@ -165,7 +165,7 @@ Alias can also be given the same value as the original column name, it's totally
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
-    filterBy: {
+    filterByAlias: {
       gender: 'gender',
       active: 'active',
     },
@@ -177,10 +177,10 @@ Then everything will be just like using filterBy:
 example.com/api/users?gender=0&active=1
 ```
 
-### <a name="orderByAlias"></a>orderByAlias
+### <a name="orderByAlias"></a>orderByAlias: {}
 Please refer to [filterByAlias](#filterByAlias) which is for the same purpose and with the same behaviour.
 
-### <a name="filter"></a>filter
+### <a name="filter"></a>filter: {}
 If you want to pre-filter the table without any querystring from client, simply do:
 ```js
 const users = await User.findAll({
@@ -197,7 +197,7 @@ You can still add querystring for further filtering, this will be the same as do
 example.com/api/users?gender=0
 ```
 
-### <a name="search"></a>search
+### <a name="search"></a>search: string
 If you want to pre-search the table without any querystring from client, simply do as follow, to be noticed that "searchBy" is still needed to be declared as it tells database on which columns to perform the search:
 ```js
 const users = await User.findAll({
@@ -212,7 +212,7 @@ Because multiple search is not supported yet, if you keep adding querystring for
 example.com/api/users?search=some_other_content
 ```
 
-### <a name="order"></a>order
+### <a name="order"></a>order: {}
 If you want to pre-order the table, simply do as follow, to be notice that it can only order the table based on one column at a time:
 ```js
 const users = await User.findAll({
