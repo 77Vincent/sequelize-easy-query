@@ -10,7 +10,7 @@ npm install sequelize-easy-query --save
 ```
 
 ## Usage
-Let's say we have a "User" table, we want to implement filter, order or seaerch feature using querystring, with the native sequelize "where" and "order" clause.
+Let's say we have a "User" table, we want to implement filtering, ordering and searching using querystring, with the native sequelize "where" and "order" clause.
 ```js
 // user-model.js
 // For demonstration purpose, some codes are omitted
@@ -28,7 +28,6 @@ module.exports.User = new Sequelize(configs).define('user', {
 ```
 ```js
 // user-router.js
-// For demonstration purpose, some codes are omitted
 
 const seq = require('sequelize-easy-query')
 
@@ -124,11 +123,11 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can filter by using the new key:
+Now you can filter users by using the new keys and the original ones can no longer be used:
 ```bash
 example.com/api/users?isMale=0&isAvailable=1
 ```
-This feature is especially useful when you have included other associated models, you want to filter the main model by some columns from those associated models and to not affect the main model:
+This feature is especially useful when you have included other associated models, you want to filter the main model by some columns from those associated models but to not affect the main model:
 ```js
 const users = await User.findAll({
   include: [{
@@ -146,9 +145,9 @@ const users = await User.findAll({
 ```
 Now "puppy_gender" is used to filter users based on their puppies' gender, but not they themselves' gender:
 ```bash
-example.com/api/users?pet_gender=1
+example.com/api/users?puppy_gender=1
 ```
-While "gender" is still used to filter by users' gender:
+While "gender" is still used to filter users by users' gender:
 ```bash
 example.com/api/users?gender=1
 ```
