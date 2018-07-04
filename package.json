@@ -1,5 +1,5 @@
 {
-  "name": "sequelize-where",
+  "name": "sequelize-easy-query",
   "version": "1.0.0",
   "description": "An easy and robust way of making filtering, searching and ordering in sequelize.",
   "main": "./sequelize-easy-query.js",
