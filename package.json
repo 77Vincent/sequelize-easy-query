@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/77Vincent/sequelize-where.git"
+    "url": "git+https://github.com/77Vincent/sequelize-easy-query.git"
   },
   "keywords": [
     "sequelize",
@@ -25,9 +25,9 @@
   "author": "77Vincent <wentianqi77@outlook.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/77Vincent/sequelize-where/issues"
+    "url": "https://github.com/77Vincent/sequelize-easy-query/issues"
   },
-  "homepage": "https://github.com/77Vincent/sequelize-where#readme",
+  "homepage": "https://github.com/77Vincent/sequelize-easy-query#readme",
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
