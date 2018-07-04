@@ -171,7 +171,7 @@ example.com/api/users?gender=0&active=1
 Please refer to [filterByAlias](#filterByAlias) which is for the same purpose and with the same behaviour.
 
 ### <a name="filter"></a>filter
-If you want to pre-filter the table, simply do:
+If you want to pre-filter the table without any querystring from client, simply do:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -182,13 +182,13 @@ const users = await User.findAll({
   }),
 })
 ```
-Now without actually passing any querystring, you will get result that's already been filtered:
+You can still add querystring for further filtering, this will be the same as doing "?gender=1&gender=0&active=0":
 ```bash
-example.com/api/users
+example.com/api/users?gender=0
 ```
 
 ### <a name="search"></a>search
-If you want to pre-search the table, simply do as follow, to be noticed that "searchBy" is needed to be declared as it tells database which column to search:
+If you want to pre-search the table without any querystring from client, simply do as follow, to be noticed that "searchBy" is still needed to be declared as it tells database on which columns to perform the search:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -197,13 +197,13 @@ const users = await User.findAll({
   }),
 })
 ```
-Now without actually passing any querystring, you will get result that's already been searched:
+Because multiple search is not supported yet, if you keep adding querystring for search, it won't give you new result:
 ```bash
-example.com/api/users
+example.com/api/users?search=some_other_content
 ```
 
 ### <a name="order"></a>order
-If you want to pre-order the table, simply do as follow, to be notice that only one column 
+If you want to pre-order the table, simply do as follow, to be notice that it can only order the table based on one column at a time:
 ```js
 const users = await User.findAll({
   order: seq('raw query string', {
@@ -213,8 +213,7 @@ const users = await User.findAll({
   }),
 })
 ```
-Now without actually passing any querystring, you will get result that's already been searched:
+You can still add querystring for further ordering, the new added query will take place:
 ```bash
-example.com/api/users
+example.com/api/users?updated_at=DESC
 ```
-
