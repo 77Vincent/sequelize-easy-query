@@ -70,6 +70,8 @@ example.com/api/users?search&&
 * [search](#search)
 * [order](#order)
 
+
+## Basic Query
 ### <a name="filterBy"></a>filterBy: string[ ]
 Filter users by "gender" and "active" column:
 ```js
@@ -79,7 +81,7 @@ const users = await User.findAll({
   }),
 })
 ```
-Making query in combination, this will return users with gender=0 **and** active=1
+Making query in combination, this will return users with gender=0 **AND** active=1
 ```bash
 example.com/api/users?gender=0&active=1
 ```
@@ -101,7 +103,7 @@ Use key "search" to trigger a search:
 ```bash
 example.com/api/users?search=some_values
 ```
-Multiple search, this will return users that have *value_1* **OR** *value_2*:
+Multiple search, this will return users that have "value_1" **OR** "value_2":
 ```bash
 example.com/api/users?search=value_1&search=value_2
 ```
@@ -127,6 +129,7 @@ Multiple ordering is meaningless, only the first one will work:
 example.com/api/users?age=DESC&updated_at=ASC
 ```
 
+## Query With Alias
 ### <a name="filterByAlias"></a>filterByAlias: {}
 Sometimes you want the key used for query not to be the same as its corresponding column name:
 ```js
@@ -178,15 +181,19 @@ const users = await User.findAll({
     },
   }),
 })
-```
-Then everything will be just like using filterBy:
-```bash
-example.com/api/users?gender=0&active=1
+
+// is same as
+const users = await User.findAll({
+  where: seq('raw query string', {
+    filterBy: ['gender', 'active'],
+  }),
+})
 ```
 
 ### <a name="orderByAlias"></a>orderByAlias: {}
 Please refer to [filterByAlias](#filterByAlias) which is for the same purpose and with the same behaviour.
 
+## Pre-query
 ### <a name="filter"></a>filter: {}
 Pre-filter without any querystring from client:
 ```js
@@ -217,7 +224,7 @@ Pre-order without any querystring from client, it can only take one key-value pa
 const users = await User.findAll({
   order: seq('raw query string', {
     order: {
-      age: 'DESC'
+      age: 'DESC',
     }
   }),
 })
