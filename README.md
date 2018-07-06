@@ -9,7 +9,7 @@ An easy and robust way of making filtering, searching and ordering using queryst
 npm install sequelize-easy-query --save
 ```
 
-## Usage
+## Quick Start
 Let's say we have a "User" table, we want to implement filtering, ordering and searching using querystring, with the native sequelize "where" and "order" clause.
 ```js
 // user-model.js
@@ -41,17 +41,21 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you are able to perform multiple queries on the table using querystring with safety:
+Now we can make query using querystring individually or in combination with safety:
 ```bash
-example.com/api/users?gender=0&active=1&search=programmer&cost=DESC
+example.com/api/users?gender=0&active=1&search=programmer&search=confident&cost=DESC
 ```
 Passing incomplete querystring or nonexistent column names won't cause any error, in below cases, the whole table without any filtering will be returned:
 ```bash
-example.com/api/users?&status=1
+example.com/api/users?&foo=1
 ```
 ```bash
 example.com/api/users?gender
 ```
+```bash
+example.com/api/users?search&&
+```
+
 
 ## Table of API
 ##### Basic query
@@ -66,8 +70,10 @@ example.com/api/users?gender
 * [search](#search)
 * [order](#order)
 
+
+## Basic Query
 ### <a name="filterBy"></a>filterBy: string[ ]
-Filter the "User" table by "gender" and "active" column:
+Filter users by "gender" and "active" column:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -75,17 +81,17 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can filter with querystring individually or in combination:
+Making query in combination, this will return users with gender=0 **AND** active=1
 ```bash
 example.com/api/users?gender=0&active=1
 ```
-Multiple selections on the same column, this will return users with gender 1 **OR** 0
+Multiple selection, this will return users with gender=0 **OR** users with gender=1
 ```bash
 example.com/api/users?gender=0&gender=1
 ```
 
 ### <a name="searchBy"></a>searchBy: string[ ]
-Search users by content in their "bio" **OR** "motto" column:
+Search users if they have certain content in their "bio" **OR** "motto" column:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -93,17 +99,17 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can trigger a search by using the key "search", which will give you those users that have "some_values" in their "bio" **OR** "motto" field:
+Use key "search" to trigger a search:
 ```bash
 example.com/api/users?search=some_values
 ```
-Unlike filterBy, multiple searches is **NOT SUPPORTED** yet, only one search can be given at a time:
+Multiple search, this will return users that have "value_1" **OR** "value_2":
 ```bash
-example.com/api/users?search=some_values&search=some_other_values
+example.com/api/users?search=value_1&search=value_2
 ```
 
 ### <a name="orderBy"></a>orderBy: string[ ]
-Order users by their "age" or "updated_at" value:
+Order users by their "age" **OR** "updated_at" value:
 ```js
 const users = await User.findAll({
   order: seq('raw query string', {
@@ -111,20 +117,21 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can order the table by "age" **OR** "updated_at" respectively, only two options are usable: DESC or ASC:
+Only two options are usable: DESC or ASC:
 ```bash
 example.com/api/users?age=DESC
 ```
 ```bash
 example.com/api/users?updated_at=ASC
 ```
-Multiple ordering is meaningless, only the first query will work:
+Multiple ordering is meaningless, only the first one will work:
 ```bash
 example.com/api/users?age=DESC&updated_at=ASC
 ```
 
+## Query With Alias
 ### <a name="filterByAlias"></a>filterByAlias: {}
-Sometimes you want the key used for query not to be the same as its corresponding column name:
+Sometimes we want the key used for query not to be the same as its corresponding column name:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -135,11 +142,11 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can filter users by using the new keys and the original ones can no longer be used:
+Now we can filter users by using the new keys and the original ones can no longer be used:
 ```bash
 example.com/api/users?isMale=0&isAvailable=1
 ```
-This feature is especially useful when you have included other associated models, you want to filter the main model based on columns from those associated models but not to affect the main model:
+This feature is especially useful when we have included other associated models, we want to filter the main model based on columns from those associated models but not to affect the main model:
 ```js
 const users = await User.findAll({
   include: [{
@@ -174,17 +181,23 @@ const users = await User.findAll({
     },
   }),
 })
-```
-Then everything will be just like using filterBy:
-```bash
-example.com/api/users?gender=0&active=1
+
+// is same as
+const users = await User.findAll({
+  where: seq('raw query string', {
+    filterBy: ['gender', 'active'],
+  }),
+})
 ```
 
 ### <a name="orderByAlias"></a>orderByAlias: {}
 Please refer to [filterByAlias](#filterByAlias) which is for the same purpose and with the same behaviour.
 
+## Pre-query
+Sometimes we want to directly send pre-filtered data to client, this can be done with options "filter", "search" and "order":
+
 ### <a name="filter"></a>filter: {}
-Pre-filter the table even without any querystring from client:
+Pre-filter without any querystring from client:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -195,38 +208,64 @@ const users = await User.findAll({
   }),
 })
 ```
-New querystring can still be added for further filtering, this will be the same as doing "?gender=1&gender=0&active=0":
-```bash
-example.com/api/users?gender=0
-```
-
-### <a name="search"></a>search: string
-Pre-search the table even without any querystring from client, to be noticed that "searchBy" is still needed to be declared as it tells database on which columns to perform the search:
+Pre-filter with multiple selection on one column:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
-    search: 'content to search',
-    searchBy: ['bio', 'motto'],
-  }),
-})
-```
-Because multiple search is not supported yet, if you keep adding querystring for search, it won't give you new result:
-```bash
-example.com/api/users?search=some_other_content
-```
-
-### <a name="order"></a>order: {}
-Pre-order the table even without any querystring from client, to be notice that it can only take one key-value pairs at a time:
-```js
-const users = await User.findAll({
-  order: seq('raw query string', {
-    order: {
-      age: 'DESC'
+    filter: {
+      gender: [0, 1],
+      active: 0,
     }
   }),
 })
 ```
-New querystring can still be added for further ordering, the new added order-query will take place:
+
+### <a name="search"></a>search: string[ ]
+Pre-search without any querystring from client, "searchBy" is still needed to be declared as it tells database on which columns to perform the search:
+```js
+const users = await User.findAll({
+  where: seq('raw query string', {
+    search: ['some content', 'some other content'],
+    searchBy: ['bio', 'motto'],
+  }),
+})
+```
+
+### <a name="order"></a>order: {}
+Pre-order without any querystring from client, it can only take one key-value pairs at a time:
+```js
+const users = await User.findAll({
+  order: seq('raw query string', {
+    order: {
+      age: 'DESC',
+    }
+  }),
+})
+```
+
+Something about pre-query to be noticed that:
+- Even with pre-query, further custom querystring can still be given from client:
 ```bash
-example.com/api/users?updated_at=DESC
+example.com/api/users?gender=0&search=programmer
+```
+- Once "filterByAlias" or "orderByAlias" is set, it also requires to use the alias in the pre-query fields:
+```js
+const users = await User.findAll({
+  where: seq('raw query string', {
+    filterByAlias: {
+      gender: 'isMale',
+      active: 'isAvailable',
+    },
+    filter: {
+      isMale: 1,
+      isAvailable: 0,
+    },
+    orderByAlias: {
+      age: 'years',
+    },
+    order: {
+      years: 'DESC',
+    }
+  }),
+})
 ```
