@@ -9,7 +9,7 @@ An easy and robust way of making filtering, searching and ordering using queryst
 npm install sequelize-easy-query --save
 ```
 
-## Usage
+## Quick Start
 Let's say we have a "User" table, we want to implement filtering, ordering and searching using querystring, with the native sequelize "where" and "order" clause.
 ```js
 // user-model.js
@@ -41,17 +41,21 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you are able to perform multiple queries on the table using querystring with safety:
+Now you can make query using querystring individually or in combination with safety:
 ```bash
-example.com/api/users?gender=0&active=1&search=programmer&cost=DESC
+example.com/api/users?gender=0&active=1&search=programmer&search=confident&cost=DESC
 ```
 Passing incomplete querystring or nonexistent column names won't cause any error, in below cases, the whole table without any filtering will be returned:
 ```bash
-example.com/api/users?&status=1
+example.com/api/users?&foo=1
 ```
 ```bash
 example.com/api/users?gender
 ```
+```bash
+example.com/api/users?search&&
+```
+
 
 ## Table of API
 ##### Basic query
@@ -67,7 +71,7 @@ example.com/api/users?gender
 * [order](#order)
 
 ### <a name="filterBy"></a>filterBy: string[ ]
-Filter the "User" table by "gender" and "active" column:
+Filter users by "gender" and "active" column:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -75,11 +79,11 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can filter with querystring individually or in combination:
+Making query in combination, this will return users with gender=0 **and** active=1
 ```bash
 example.com/api/users?gender=0&active=1
 ```
-Multiple selections on the same column, this will return users with gender 1 **OR** 0
+Multiple selection, this will return users with gender=0 **OR** users with gender=1
 ```bash
 example.com/api/users?gender=0&gender=1
 ```
