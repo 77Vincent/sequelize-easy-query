@@ -85,7 +85,7 @@ example.com/api/users?gender=0&gender=1
 ```
 
 ### <a name="searchBy"></a>searchBy: string[ ]
-Search users by content in their "bio" **OR** "motto" column:
+Search users if they have certain content in their "bio" **OR** "motto" column:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -93,17 +93,17 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can trigger a search by using the key "search", which will give you those users that have "some_values" in their "bio" **OR** "motto" field:
+Use key "search" to trigger a search:
 ```bash
 example.com/api/users?search=some_values
 ```
-Unlike filterBy, multiple searches is **NOT SUPPORTED** yet, only one search can be given at a time:
+Multiple search, this will return users that have *value_1* **OR** *value_2*:
 ```bash
-example.com/api/users?search=some_values&search=some_other_values
+example.com/api/users?search=value_1&search=value_2
 ```
 
 ### <a name="orderBy"></a>orderBy: string[ ]
-Order users by their "age" or "updated_at" value:
+Order users by their "age" **OR** "updated_at" value:
 ```js
 const users = await User.findAll({
   order: seq('raw query string', {
@@ -111,14 +111,14 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can order the table by "age" **OR** "updated_at" respectively, only two options are usable: DESC or ASC:
+Only two options are usable: DESC or ASC:
 ```bash
 example.com/api/users?age=DESC
 ```
 ```bash
 example.com/api/users?updated_at=ASC
 ```
-Multiple ordering is meaningless, only the first query will work:
+Multiple ordering is meaningless, only the first one will work:
 ```bash
 example.com/api/users?age=DESC&updated_at=ASC
 ```
@@ -184,7 +184,7 @@ example.com/api/users?gender=0&active=1
 Please refer to [filterByAlias](#filterByAlias) which is for the same purpose and with the same behaviour.
 
 ### <a name="filter"></a>filter: {}
-Pre-filter the table even without any querystring from client:
+Pre-filter without any querystring from client:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -195,28 +195,20 @@ const users = await User.findAll({
   }),
 })
 ```
-New querystring can still be added for further filtering, this will be the same as doing "?gender=1&gender=0&active=0":
-```bash
-example.com/api/users?gender=0
-```
 
-### <a name="search"></a>search: string
-Pre-search the table even without any querystring from client, to be noticed that "searchBy" is still needed to be declared as it tells database on which columns to perform the search:
+### <a name="search"></a>search: string[]
+Pre-search without any querystring from client, "searchBy" is still needed to be declared as it tells database on which columns to perform the search:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
-    search: 'content to search',
+    search: ['some content', 'some other content'],
     searchBy: ['bio', 'motto'],
   }),
 })
 ```
-Because multiple search is not supported yet, if you keep adding querystring for search, it won't give you new result:
-```bash
-example.com/api/users?search=some_other_content
-```
 
 ### <a name="order"></a>order: {}
-Pre-order the table even without any querystring from client, to be notice that it can only take one key-value pairs at a time:
+Pre-order without any querystring from client, it can only take one key-value pairs at a time:
 ```js
 const users = await User.findAll({
   order: seq('raw query string', {
@@ -225,8 +217,4 @@ const users = await User.findAll({
     }
   }),
 })
-```
-New querystring can still be added for further ordering, the new added order-query will take place:
-```bash
-example.com/api/users?updated_at=DESC
 ```
