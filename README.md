@@ -41,7 +41,7 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can make query using querystring individually or in combination with safety:
+Now we can make query using querystring individually or in combination with safety:
 ```bash
 example.com/api/users?gender=0&active=1&search=programmer&search=confident&cost=DESC
 ```
@@ -131,7 +131,7 @@ example.com/api/users?age=DESC&updated_at=ASC
 
 ## Query With Alias
 ### <a name="filterByAlias"></a>filterByAlias: {}
-Sometimes you want the key used for query not to be the same as its corresponding column name:
+Sometimes we want the key used for query not to be the same as its corresponding column name:
 ```js
 const users = await User.findAll({
   where: seq('raw query string', {
@@ -142,11 +142,11 @@ const users = await User.findAll({
   }),
 })
 ```
-Now you can filter users by using the new keys and the original ones can no longer be used:
+Now we can filter users by using the new keys and the original ones can no longer be used:
 ```bash
 example.com/api/users?isMale=0&isAvailable=1
 ```
-This feature is especially useful when you have included other associated models, you want to filter the main model based on columns from those associated models but not to affect the main model:
+This feature is especially useful when we have included other associated models, we want to filter the main model based on columns from those associated models but not to affect the main model:
 ```js
 const users = await User.findAll({
   include: [{
@@ -194,6 +194,8 @@ const users = await User.findAll({
 Please refer to [filterByAlias](#filterByAlias) which is for the same purpose and with the same behaviour.
 
 ## Pre-query
+Sometimes we want to directly send pre-filtered data to client, this can be done with options "filter", "search" and "order":
+
 ### <a name="filter"></a>filter: {}
 Pre-filter without any querystring from client:
 ```js
@@ -206,8 +208,19 @@ const users = await User.findAll({
   }),
 })
 ```
+Pre-filter with multiple selection on one column:
+```js
+const users = await User.findAll({
+  where: seq('raw query string', {
+    filter: {
+      gender: [0, 1],
+      active: 0,
+    }
+  }),
+})
+```
 
-### <a name="search"></a>search: string[]
+### <a name="search"></a>search: string[ ]
 Pre-search without any querystring from client, "searchBy" is still needed to be declared as it tells database on which columns to perform the search:
 ```js
 const users = await User.findAll({
@@ -225,6 +238,33 @@ const users = await User.findAll({
   order: seq('raw query string', {
     order: {
       age: 'DESC',
+    }
+  }),
+})
+```
+
+Something about pre-query to be noticed that:
+- Even with pre-query, further custom querystring can still be given from client:
+```bash
+example.com/api/users?gender=0&search=programmer
+```
+- Once "filterByAlias" or "orderByAlias" is set, it also requires to use the alias in the pre-query fields:
+```js
+const users = await User.findAll({
+  where: seq('raw query string', {
+    filterByAlias: {
+      gender: 'isMale',
+      active: 'isAvailable',
+    },
+    filter: {
+      isMale: 1,
+      isAvailable: 0,
+    },
+    orderByAlias: {
+      age: 'years',
+    },
+    order: {
+      years: 'DESC',
     }
   }),
 })
