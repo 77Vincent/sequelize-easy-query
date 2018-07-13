@@ -28,15 +28,20 @@ module.exports.User = new Sequelize(configs).define('user', {
 ```
 ```js
 // user-router.js
+// For demonstration purpose, some codes are omitted
 
 const seq = require('sequelize-easy-query')
 
+// The way of getting raw querystring in Koa
+// the value might look like: "gender=0&active=1&age=10"
+const querystring = ctx.request.querystring
+
 const users = await User.findAll({
-  where: seq('raw query string', {
+  where: seq(querystring, {
     filterBy: ['gender', 'active'],
     searchBy: ['bio', 'motto'],
   }),
-  order: seq('raw query string', {
+  order: seq(querystring, {
     orderBy: ['age', 'updated_at'],
   }),
 })
